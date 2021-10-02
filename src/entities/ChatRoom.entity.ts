@@ -27,6 +27,10 @@ export default class ChatRoom extends BaseEntity {
   @ManyToMany(() => User, (u) => u.chatrooms)
   users!: User[];
 
-  @OneToMany(() => Message, (m) => m.chatRoom)
+  @OneToMany(() => Message, (m) => m.chatRoom, { cascade: true })
   messages!: Message[];
+
+  toWebJson() {
+    return { id: this.id, owner: this.owner?.toWebJson(), users: this.users?.map((e) => e.toWebJson()) };
+  }
 }

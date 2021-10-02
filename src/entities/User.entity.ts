@@ -15,4 +15,11 @@ export default class User extends BaseEntity {
   @ManyToMany(() => ChatRoom, (r) => r.users, { cascade: true })
   @JoinTable()
   chatrooms!: ChatRoom[];
+
+  toWebJson() {
+    return {
+      id: this.id,
+      username: this.user,
+    };
+  }
 }

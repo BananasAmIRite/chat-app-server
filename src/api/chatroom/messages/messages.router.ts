@@ -66,12 +66,12 @@ MessagesRouter.get('/', async (req, res) => {
       relations: ['user', 'chatRoom'],
     });
 
-    const formattedMessages = messages.map((e) => {
-      return { ...e, user: undefined, chatRoom: undefined, userId: e.user?.id };
-    });
+    const formattedMessages = messages.map((e) => e.toWebJson());
 
     Utils.success(res, formattedMessages);
   } catch (err: any) {
+    console.log(err);
+
     Utils.error(res, err.message);
   }
 });

@@ -23,4 +23,12 @@ export default class Message extends BaseEntity {
       user: this.user.id,
     };
   }
+
+  toWebJson() {
+    return {
+      ...this,
+      user: this.user?.toWebJson(),
+      chatRoom: this.chatRoom?.toWebJson(),
+    };
+  }
 }
