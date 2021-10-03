@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import ChatRoom from './ChatRoom.entity';
 import User from './User.entity';
 
@@ -15,6 +15,9 @@ export default class Message extends BaseEntity {
 
   @ManyToOne(() => User)
   user!: User;
+
+  @DeleteDateColumn({ type: 'timestamp' })
+  deletedAt!: Date;
 
   toJson() {
     return {

@@ -43,7 +43,7 @@ ChatroomCreateRouter.post('/', async (req, res) => {
       messages: [],
     });
 
-    user.chatrooms.push(cr);
+    cr.users.push(user);
 
     await cr.save();
     await user.save();
