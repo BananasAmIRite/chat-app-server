@@ -1,15 +1,14 @@
 import ChatServer from './Server';
-import Utils from './utils/utils';
-import { WebSocket } from 'ws';
+import * as ws from 'ws';
 
 export default class EventSocketManager<IDType = string> {
   // will have all the event websockets stored
-  private websockets: Map<IDType, WebSocket>;
+  private websockets: Map<IDType, ws>;
   constructor(private server: ChatServer) {
     this.websockets = new Map();
   }
 
-  addSocket(id: IDType, ws: WebSocket) {
+  addSocket(id: IDType, ws: ws) {
     ws.on('close', () => {
       this.removeSocket(id);
     });

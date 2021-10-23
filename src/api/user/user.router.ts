@@ -1,6 +1,8 @@
 import express, { Router } from 'express';
 import expressWs from 'express-ws';
+import User from '../../entities/User.entity';
 import VerifyCredentials from '../../middlewares/VerifyCredentials';
+import Utils from '../../utils/utils';
 
 const app = expressWs(express());
 
@@ -37,6 +39,24 @@ UserRouter.ws('/events', (ws, req) => {
 
     req.server.events.emit(evt.name, token, evt);
   });
+});
+
+UserRouter.get('/me', async (req, res) => {
+  const token = req.authToken || '';
+
+  const userId = req.server.tokens.getIDByToken(token);
+  if (!token || !userId) return Utils.error(res, 'Invalid token. ', 401);
+
+  const user = await User.findOne({
+    where: {
+      id: userId,
+    },
+    relations: ['chatrooms'],
+  });
+
+  if (!user) return Utils.error(res, `Invalid user. `, 401);
+
+  Utils.success(res, user.toWebJson());
 });
 
 export default UserRouter;

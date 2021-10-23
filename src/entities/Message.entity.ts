@@ -32,6 +32,7 @@ export default class Message extends BaseEntity {
       ...this,
       user: this.user?.toWebJson(),
       chatRoom: this.chatRoom?.toWebJson(),
+      deletedAt: undefined,
     };
   }
 }

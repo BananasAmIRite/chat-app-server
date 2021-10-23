@@ -30,6 +30,8 @@ oAuth2Router.get('/auth', async (req, res) => {
     req.server.tokens.add(token, dbUser.id);
   } catch (err) {}
 
+  res.cookie(`session`, token);
+
   Utils.success(res, {
     token: token,
   });

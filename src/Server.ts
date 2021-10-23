@@ -39,7 +39,12 @@ export default class ChatServer {
   private registerMiddlewares(): void {
     this._server.use(urlencoded({ extended: true }));
     this._server.use(json());
-    this._server.use(cors());
+    this._server.use(
+      cors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+      })
+    );
     this._server.use(cookieParser());
     this._server.use((req: Request, res, next) => {
       req.server = this;

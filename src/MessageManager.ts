@@ -44,7 +44,7 @@ export default class MessageManager {
     }
 
     for (const [k, v] of this.server.eventSockets.sockets.entries()) {
-      if (chatRoomUserMemo.includes(k)) v.send(msg.toJson());
+      if (chatRoomUserMemo.includes(k)) v.send(JSON.stringify({ type: 'message', payload: msg.toWebJson() }));
     }
   }
 }

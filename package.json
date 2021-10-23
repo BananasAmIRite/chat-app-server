@@ -18,7 +18,8 @@
     "md5": "^2.3.0",
     "mysql2": "^2.3.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.37"
+    "typeorm": "^0.2.37",
+    "ws": "^8.2.3"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.2",

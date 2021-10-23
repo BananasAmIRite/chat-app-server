@@ -1,5 +1,12 @@
 import { BaseEntity, Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import ChatRoom from './ChatRoom.entity';
+import ChatRoom, { ChatRoomJSON } from './ChatRoom.entity';
+
+export interface UserJSON {
+  id: number;
+  username: string;
+  chatrooms: ChatRoomJSON[];
+  deletedAt?: undefined;
+}
 
 @Entity()
 export default class User extends BaseEntity {
@@ -19,10 +26,12 @@ export default class User extends BaseEntity {
   @DeleteDateColumn({ type: 'timestamp' })
   deletedAt!: Date;
 
-  toWebJson() {
+  toWebJson(): UserJSON {
     return {
       id: this.id,
       username: this.user,
+      chatrooms: this.chatrooms?.map((e) => e.toWebJson()),
+      deletedAt: undefined,
     };
   }
 }

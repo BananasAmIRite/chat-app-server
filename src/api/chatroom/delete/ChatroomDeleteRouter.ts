@@ -7,7 +7,7 @@ const ChatroomDeleteRouter = Router({
   mergeParams: true,
 });
 
-ChatroomDeleteRouter.post('/', async (req, res) => {
+ChatroomDeleteRouter.post<{ roomId: string }>('/', async (req, res) => {
   /*
   params: {
     name: string, 
@@ -15,16 +15,11 @@ ChatroomDeleteRouter.post('/', async (req, res) => {
     users: User[]
   }
   */
-  // returns {roomId: string}
+  // returns boolean
 
-  // ------------
-  // ---- these things should never happen ----
   const userId = req.server.tokens.getIDByToken(req.authToken || '');
-  // @ts-ignore <-- specified in chatroom.router.ts
-  const crId = req.params.roomId;
 
   if (!userId) return Utils.error(res, `Invalid user. `, 401);
-  if (!crId) return Utils.error(res, `Invalid chatroom. `, 400);
 
   const user = await User.findOne({
     where: {
@@ -36,24 +31,16 @@ ChatroomDeleteRouter.post('/', async (req, res) => {
   if (!user) return Utils.error(res, `Invalid user. `, 401);
 
   try {
-    const room = await ChatRoom.findOne({
-      where: {
-        id: crId,
-      },
-      relations: ['messages', 'users'],
-    });
-
-    if (!room) return Utils.error(res, `No such room. `, 404); // supposed to return this
+    const room = req.room!;
 
     if (room.owner.id !== user.id) return Utils.error(res, `No access. `, 403);
 
     await room.softRemove();
-    // X bruh this is what im looking for
 
     Utils.success(res, true);
   } catch (err) {
     console.log(err);
-    return Utils.error(res, `Unknown error. `, 400);
+    return Utils.error(res, `Unknown error. `, 500);
   }
 });
 

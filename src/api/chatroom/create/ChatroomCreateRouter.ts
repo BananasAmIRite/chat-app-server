@@ -46,12 +46,12 @@ ChatroomCreateRouter.post('/', async (req, res) => {
     cr.users.push(user);
 
     await cr.save();
-    await user.save();
+    // await user.save();
 
     Utils.success(res, cr.id);
   } catch (err) {
     console.log(err);
-    return Utils.error(res, `Unknown error. `, 400);
+    return Utils.error(res, `Unknown error. `, 500);
   }
 });
 
