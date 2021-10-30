@@ -1,4 +1,12 @@
-import { BaseEntity, Column, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import ChatRoom from './ChatRoom.entity';
 import User from './User.entity';
 
@@ -10,11 +18,14 @@ export default class Message extends BaseEntity {
   @ManyToOne(() => ChatRoom, (r) => r.messages)
   chatRoom!: ChatRoom;
 
-  @Column()
+  @Column({ type: 'mediumtext' })
   content!: string;
 
   @ManyToOne(() => User)
   user!: User;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
 
   @DeleteDateColumn({ type: 'timestamp' })
   deletedAt!: Date;

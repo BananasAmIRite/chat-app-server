@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import Utils from '../../../utils/utils';
 import User from '../../../entities/User.entity';
-import ChatRoom from '../../../entities/ChatRoom.entity';
 
 const ChatroomDeleteRouter = Router({
   mergeParams: true,

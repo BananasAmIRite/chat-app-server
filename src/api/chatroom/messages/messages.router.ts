@@ -52,8 +52,8 @@ MessagesRouter.get<{ roomId: string }>('/', async (req, res) => {
   }
 });
 
-MessagesRouter.post<{ roomId: string }>('/send', async (req, res) => {
-  const message = req.query.message as string;
+MessagesRouter.post<{ roomId: string }, any, { message: string }>('/send', async (req, res) => {
+  const message = req.body.message;
   const userId = req.server.tokens.getIDByToken(req.authToken || '');
 
   if (!message) return Utils.error(res, `No message. `, 400);

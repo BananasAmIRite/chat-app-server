@@ -9,6 +9,7 @@ import expressWs from 'express-ws';
 import EventsManager from './EventsManager';
 import EventSocketManager from './EventSocketManager';
 import MessageManager from './MessageManager';
+import bodyParser from 'body-parser';
 
 export default class ChatServer {
   private _server: expressWs.Application;
@@ -39,6 +40,8 @@ export default class ChatServer {
   private registerMiddlewares(): void {
     this._server.use(urlencoded({ extended: true }));
     this._server.use(json());
+    this._server.use(bodyParser.urlencoded({ extended: true }));
+    this._server.use(bodyParser.json());
     this._server.use(
       cors({
         origin: 'http://localhost:3000',
