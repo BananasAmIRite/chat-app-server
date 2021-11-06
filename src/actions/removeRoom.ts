@@ -3,28 +3,17 @@ import Message from '../entities/Message.entity';
 import User from '../entities/User.entity';
 import ChatServer from '../Server';
 
-export default async function createRoom(server: ChatServer, owner: string | User, roomName: string) {
-  const normalizedOwner =
-    typeof owner === 'string'
-      ? await User.findOne({
+export default async function removeRoom(server: ChatServer, room: string | ChatRoom) {
+  const normalizedRoom =
+    typeof room === 'string'
+      ? await ChatRoom.findOne({
           where: {
-            id: owner,
+            id: room,
           },
-          relations: ['chatrooms'],
         })
-      : owner;
+      : room;
 
-  if (!normalizedOwner) throw new Error(`Invalid user. `);
-
-  const room = ChatRoom.create({
-    name: roomName,
-    owner: normalizedOwner,
-    users: [],
-    messages: [],
-  });
-
-  room.users.push(normalizedOwner);
-  await room.save();
+  await normalizedRoom?.softRemove();
 
   // no events emitted for room creation
   //   const chatRoomUserMemo = [];

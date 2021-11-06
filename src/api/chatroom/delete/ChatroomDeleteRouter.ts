@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import Utils from '../../../utils/utils';
 import User from '../../../entities/User.entity';
+import removeRoom from '../../../actions/removeRoom';
 
 const ChatroomDeleteRouter = Router({
   mergeParams: true,
@@ -33,6 +34,8 @@ ChatroomDeleteRouter.post<{ roomId: string }>('/', async (req, res) => {
     const room = req.room!;
 
     if (room.owner.id !== user.id) return Utils.error(res, `No access. `, 403);
+
+    removeRoom(req.server, room);
 
     await room.softRemove();
 

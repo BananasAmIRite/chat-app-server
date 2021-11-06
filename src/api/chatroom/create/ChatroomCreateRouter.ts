@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import Utils from '../../../utils/utils';
 import User from '../../../entities/User.entity';
-import ChatRoom from '../../../entities/ChatRoom.entity';
+import createRoom from '../../../actions/createRoom';
 
 const ChatroomCreateRouter = Router();
 
@@ -36,19 +36,21 @@ ChatroomCreateRouter.post('/', async (req, res) => {
   if (!name) return Utils.error(res, `Invalid name. `, 400);
 
   try {
-    const cr = ChatRoom.create({
-      name,
-      owner: user,
-      users: [],
-      messages: [],
-    });
+    // const cr = ChatRoom.create({
+    //   name,
+    //   owner: user,
+    //   users: [],
+    //   messages: [],
+    // });
 
-    cr.users.push(user);
+    // cr.users.push(user);
 
-    await cr.save();
-    // await user.save();
+    // await cr.save();
+    // // await user.save();
 
-    Utils.success(res, cr.id);
+    const e = await createRoom(req.server, user, name);
+
+    Utils.success(res, e.id);
   } catch (err) {
     console.log(err);
     return Utils.error(res, `Unknown error. `, 500);

@@ -54,7 +54,7 @@ ChatRoomRouter.get('/', (req, res) => {
   res.status(200).end();
 });
 
-// ChatRoomRouter.use('/:roomId/message', MessageRouter); // depreacted in favor of POST api/chatroom/:roomId/messages/send
+// ChatRoomRouter.use('/:roomId/message', MessageRouter); // deprecated in favor of POST api/chatroom/:roomId/messages/send
 ChatRoomRouter.use('/:roomId/messages', MessagesRouter);
 ChatRoomRouter.use('/:roomId/delete', ChatroomDeleteRouter);
 ChatRoomRouter.use('/:roomId/users', ChatroomUsersRouter);

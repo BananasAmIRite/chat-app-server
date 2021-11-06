@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import sendMessage from '../../../actions/sendMessage';
 import Message from '../../../entities/Message.entity';
 import User from '../../../entities/User.entity';
 import Utils from '../../../utils/utils';
@@ -73,7 +74,8 @@ MessagesRouter.post<{ roomId: string }, any, { message: string }>('/send', async
   // all that authentication for just this :(
 
   try {
-    await req.server.messages.send(room, user, message);
+    // await req.server.messages.send(room, user, message);
+    sendMessage(req.server, room, user, message);
     Utils.success(res, true);
   } catch (err: any) {
     console.log(err);

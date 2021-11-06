@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import addRoomUser from '../../../actions/addRoomUser';
+import removeRoomUser from '../../../actions/removeRoomUser';
 import User from '../../../entities/User.entity';
 import Utils from '../../../utils/utils';
 
@@ -48,9 +50,7 @@ ChatroomUsersRouter.post<{ roomId: string }>('/add', async (req, res) => {
 
     if (hasUser) return Utils.error(res, `User already in room. `, 406);
 
-    room.users.push(user);
-
-    await room.save();
+    await addRoomUser(req.server, room, user);
 
     return Utils.success(res, true);
   } catch (err) {
@@ -78,9 +78,7 @@ ChatroomUsersRouter.post<{ roomId: string }>('/remove', async (req, res) => {
 
     if (usrId === -1) return Utils.error(res, `User not in room. `, 406);
 
-    room.users.splice(usrId, 1);
-
-    await room.save();
+    await removeRoomUser(req.server, room, user);
 
     return Utils.success(res, true);
   } catch (err) {

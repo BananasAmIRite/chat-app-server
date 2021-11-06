@@ -20,6 +20,7 @@ export default class EventSocketManager<IDType = string> {
 
   emitEvent(type: EventType, payload: any, filter: (id: IDType, ws: WebSocket) => boolean = () => true) {
     const correctlyFilteredWs = new Map([...this.sockets].filter(([k, v]) => filter(k, v)));
+
     for (const socket of correctlyFilteredWs.values()) {
       socket.send(JSON.stringify({ type, payload }));
     }

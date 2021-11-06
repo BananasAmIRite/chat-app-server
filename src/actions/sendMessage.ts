@@ -38,9 +38,9 @@ export default async function sendMessage(
   });
   await msg.save();
 
-  const chatRoomUserMemo = [];
+  const chatRoomUserMemo: number[] = [];
 
-  for (const user of normalizedChatroom.users) {
+  for (const user of normalizedChatroom?.users || []) {
     chatRoomUserMemo.push(user.id);
   }
 
