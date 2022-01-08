@@ -1,4 +1,13 @@
-import { BaseEntity, Column, DeleteDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  DeleteDateColumn,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import ChatRoom, { ChatRoomJSON } from './ChatRoom.entity';
 
 export interface UserJSON {
@@ -18,6 +27,9 @@ export default class User extends BaseEntity {
 
   @Column()
   password!: string; // don't worry this is hashed
+
+  @OneToMany(() => ChatRoom, (r) => r.owner)
+  roomOwners!: ChatRoom[];
 
   @ManyToMany(() => ChatRoom, (r) => r.users)
   @JoinTable()

@@ -3,7 +3,6 @@ import {
   Column,
   DeleteDateColumn,
   Entity,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -28,12 +27,10 @@ export default class ChatRoom extends BaseEntity {
   @Column()
   name!: string;
 
-  @ManyToOne(() => User, {
-    eager: true,
-  })
+  @ManyToOne(() => User, (u) => u.roomOwners)
   owner!: User;
 
-  @ManyToMany(() => User, (u) => u.chatrooms, { cascade: true })
+  @ManyToMany(() => User, (u) => u.chatrooms)
   users!: User[];
 
   @OneToMany(() => Message, (m) => m.chatRoom, { onDelete: 'CASCADE' })

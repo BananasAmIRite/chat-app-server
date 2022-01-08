@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import md5 from 'md5';
 import User from '../../entities/User.entity';
+import VerifyCredentials from '../../middlewares/VerifyCredentials';
 import Utils from '../../utils/utils';
 
 const oAuth2Router = Router();
@@ -36,15 +37,18 @@ oAuth2Router.get('/auth', async (req, res) => {
     token: token,
   });
 });
-// how would I go about generating access tokens
 
-oAuth2Router.post('/revoke', async (req, res) => {
+oAuth2Router.use('/user', VerifyCredentials);
+
+oAuth2Router.post('/user/revoke', async (req, res) => {
   // revokes token
   // uses: {token: string}
-  const token = req.query.token;
+
+  const token = req.authToken;
   if (!token || typeof token !== 'string') return Utils.error(res, `No token specified. `, 400);
   if (!req.server.tokens.hasToken(token)) return Utils.error(res, `Invalid token specified. `, 400);
   req.server.tokens.remove(token);
+  res.clearCookie(`session`);
   Utils.success(res);
 });
 

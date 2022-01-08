@@ -3,6 +3,7 @@ import expressWs from 'express-ws';
 import User from '../../entities/User.entity';
 import VerifyCredentials from '../../middlewares/VerifyCredentials';
 import Utils from '../../utils/utils';
+import GetUserRouter from './getuser/getuser.router';
 
 const app = expressWs(express());
 
@@ -58,5 +59,7 @@ UserRouter.get('/me', async (req, res) => {
 
   Utils.success(res, user.toWebJson());
 });
+
+UserRouter.use('/getuser', GetUserRouter);
 
 export default UserRouter;

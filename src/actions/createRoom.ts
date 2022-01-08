@@ -29,14 +29,7 @@ export default async function createRoom(
   room.users.push(normalizedOwner);
   await room.save();
 
+  server.eventSockets.emitEvent('roomcreate', room.toWebJson().users, (id) => normalizedOwner.id === id);
+
   return room;
-
-  // no events emitted for room creation
-  //   const chatRoomUserMemo = [];
-
-  //   for (const user of normalizedChatroom.users) {
-  //     chatRoomUserMemo.push(user.id);
-  //   }
-
-  //   server.eventSockets.emitEvent('message', msg.toWebJson(), (id) => chatRoomUserMemo.includes(id));
 }

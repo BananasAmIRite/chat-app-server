@@ -72,6 +72,7 @@ export default class ChatServer {
       entities: [__dirname + '/entities/**/*.ts'],
       // logging: true,
       synchronize: true,
+      logging: 'all',
       // log anything that takes more than a second
       maxQueryExecutionTime: 1000,
     });

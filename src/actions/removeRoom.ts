@@ -13,14 +13,16 @@ export default async function removeRoom(server: ChatServer, room: string | Chat
         })
       : room;
 
+  if (!normalizedRoom) throw new Error(`Invalid room. `);
+
   await normalizedRoom?.softRemove();
 
   // no events emitted for room creation
-  //   const chatRoomUserMemo = [];
+  const memo: number[] = [];
 
-  //   for (const user of normalizedChatroom.users) {
-  //     chatRoomUserMemo.push(user.id);
-  //   }
+  for (const user of normalizedRoom.users) {
+    memo.push(user.id);
+  }
 
-  //   server.eventSockets.emitEvent('message', msg.toWebJson(), (id) => chatRoomUserMemo.includes(id));
+  server.eventSockets.emitEvent('roomremove', normalizedRoom.toWebJson(), (id) => memo.includes(id));
 }

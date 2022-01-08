@@ -27,11 +27,12 @@ ChatRoomRouter.use(VerifyCredentials);
 
 ChatRoomRouter.use('/:roomId', async (req, res, next) => {
   const roomId = req.params.roomId;
+  if (roomId === 'create') return next();
   const room = await ChatRoom.findOne({
     where: {
       id: roomId,
     },
-    relations: ['messages', 'users'],
+    relations: ['messages', 'users', 'owner'],
   });
   if (!room) return Utils.error(res, 'Invalid room. ', 404);
 

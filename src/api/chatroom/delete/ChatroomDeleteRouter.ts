@@ -37,8 +37,6 @@ ChatroomDeleteRouter.post<{ roomId: string }>('/', async (req, res) => {
 
     removeRoom(req.server, room);
 
-    await room.softRemove();
-
     Utils.success(res, true);
   } catch (err) {
     console.log(err);

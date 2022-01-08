@@ -1,7 +1,7 @@
 import ChatServer from './Server';
 import WebSocket from 'ws';
 
-type EventType = 'message' | 'roomuseradd' | 'roomuserremove';
+type EventType = 'message' | 'roomuseradd' | 'roomuserremove' | 'roomcreate' | 'roomremove';
 
 export default class EventSocketManager<IDType = string> {
   // will have all the event websockets stored

@@ -28,6 +28,7 @@ export default async function addRoomUser(server: ChatServer, room: string | Cha
   for (const user of normalizedRoom.users) {
     memo.push(user.id);
   }
+  memo.push(normalizedUser.id);
 
   normalizedRoom.users.push(normalizedUser);
 
