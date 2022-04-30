@@ -9,6 +9,6 @@ declare global {
       userId?: number;
       authToken?: string;
       room?: ChatRoom;
-    }
+    } // just add data to the Socket object
   }
 }

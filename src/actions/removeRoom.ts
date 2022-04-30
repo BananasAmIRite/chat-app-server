@@ -3,17 +3,19 @@ import Message from '../entities/Message.entity';
 import User from '../entities/User.entity';
 import ChatServer from '../Server';
 
-export default async function removeRoom(server: ChatServer, room: string | ChatRoom) {
+export default async function removeRoom(server: ChatServer, room: number | ChatRoom, userId: number) {
   const normalizedRoom =
-    typeof room === 'string'
+    typeof room === 'number'
       ? await ChatRoom.findOne({
           where: {
             id: room,
           },
+          relations: ['owner'],
         })
       : room;
 
   if (!normalizedRoom) throw new Error(`Invalid room. `);
+  if (normalizedRoom?.owner.id !== userId) throw new Error('No permission');
 
   await normalizedRoom?.softRemove();
 
@@ -24,5 +26,5 @@ export default async function removeRoom(server: ChatServer, room: string | Chat
     memo.push(user.id);
   }
 
-  server.eventSockets.emitEvent('roomremove', normalizedRoom.toWebJson(), (id) => memo.includes(id));
+  server.eventSockets.emitEvent('server:remove', { id: normalizedRoom.id }, memo);
 }

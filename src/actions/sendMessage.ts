@@ -5,12 +5,12 @@ import ChatServer from '../Server';
 
 export default async function sendMessage(
   server: ChatServer,
-  chatroom: string | ChatRoom,
-  user: string | User,
+  chatroom: number | ChatRoom,
+  user: number | User,
   message: string
 ) {
   const normalizedChatroom =
-    typeof chatroom === 'string'
+    typeof chatroom === 'number'
       ? await ChatRoom.findOne({
           where: {
             id: chatroom,
@@ -20,13 +20,15 @@ export default async function sendMessage(
       : chatroom;
 
   const normalizedUser =
-    typeof user === 'string'
+    typeof user === 'number'
       ? await User.findOne({
           where: {
             id: user,
           },
         })
       : user;
+
+  if (!normalizedChatroom) throw new Error('Invalid chatroom');
 
   // if (!normalizedChatroom) throw new Error(`Invalid chatroom. `);
   // if (!normalizedUser) throw new Error(`Invalid user. `);
@@ -44,5 +46,12 @@ export default async function sendMessage(
     chatRoomUserMemo.push(user.id);
   }
 
-  server.eventSockets.emitEvent('message', msg.toWebJson(), (id) => chatRoomUserMemo.includes(id));
+  server.eventSockets.emitEvent(
+    'server:sendMessage',
+    {
+      roomId: normalizedChatroom.id,
+      message: msg.toWebJson(),
+    },
+    chatRoomUserMemo
+  );
 }

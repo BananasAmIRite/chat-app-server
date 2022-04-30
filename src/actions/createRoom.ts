@@ -4,11 +4,11 @@ import ChatServer from '../Server';
 
 export default async function createRoom(
   server: ChatServer,
-  owner: string | User,
+  owner: number | User,
   roomName: string
 ): Promise<ChatRoom> {
   const normalizedOwner =
-    typeof owner === 'string'
+    typeof owner === 'number'
       ? await User.findOne({
           where: {
             id: owner,
@@ -16,6 +16,9 @@ export default async function createRoom(
           relations: ['chatrooms'],
         })
       : owner;
+
+  console.log('creating room...');
+  console.log(normalizedOwner);
 
   if (!normalizedOwner) throw new Error(`Invalid user. `);
 
@@ -29,7 +32,7 @@ export default async function createRoom(
   room.users.push(normalizedOwner);
   await room.save();
 
-  server.eventSockets.emitEvent('roomcreate', room.toWebJson().users, (id) => normalizedOwner.id === id);
+  server.eventSockets.emitEvent('server:create', room.toWebJson(), [normalizedOwner.id]);
 
   return room;
 }

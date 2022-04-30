@@ -5,28 +5,48 @@ import Utils from './utils/utils';
 import ApiRouter from './api/api.router';
 import TokenStore from './TokenStore';
 import { createConnection } from 'typeorm';
-import expressWs from 'express-ws';
 import EventsManager from './EventsManager';
 import EventSocketManager from './EventSocketManager';
 import MessageManager from './MessageManager';
 import bodyParser from 'body-parser';
+import { createServer, Server as HttpServer } from 'http';
+import { Server as IOServer } from 'socket.io';
+import registerListeners from './registerListeners';
+import expressWs from 'express-ws';
 
 export default class ChatServer {
-  private _server: expressWs.Application;
+  public static instance: ChatServer;
+
+  private _server: express.Application;
+  private httpServer: HttpServer;
+  private io: IOServer;
   private _tokens: TokenStore;
   private _events: EventsManager;
   private _socketManager: EventSocketManager<number>;
   private _messages: MessageManager;
   constructor() {
-    this._server = expressWs(express()).app;
+    this._server = express();
     this._tokens = new TokenStore();
     this._events = new EventsManager();
-    this._socketManager = new EventSocketManager<number>(this);
     this._messages = new MessageManager(this);
     this.registerMiddlewares();
     this.registerRouters();
 
+    this.httpServer = createServer(this._server);
+    this.io = new IOServer(this.httpServer, {
+      cors: {
+        origin: 'http://localhost:3000',
+        credentials: true,
+      },
+    });
+
+    this._socketManager = new EventSocketManager<number>(this.io);
+
+    registerListeners(this, this.io);
+
     this.createDBConnection();
+
+    ChatServer.instance = this;
   }
 
   registerRouter(route: string, router: Router) {
@@ -45,6 +65,7 @@ export default class ChatServer {
     this._server.use(
       cors({
         origin: 'http://localhost:3000',
+
         credentials: true,
       })
     );
@@ -58,7 +79,8 @@ export default class ChatServer {
 
   start(port: number, callback?: () => void) {
     const normalized = Utils.normalizePort(port);
-    this._server.listen(normalized, callback);
+    this.httpServer.listen(normalized, callback);
+    // this._server.listen(normalized);
   }
 
   createDBConnection() {

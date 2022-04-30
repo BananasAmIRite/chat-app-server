@@ -1,8 +1,26 @@
 import ChatRoom from '../entities/ChatRoom.entity';
 import User from '../entities/User.entity';
 import ChatServer from '../Server';
+// TODO: client -> server events to listen for:
+//  client:userAdd
+//  client:create
+//  client:remove
+//  client:userRemove
+//  client:sendMessage
 
-export default async function addRoomUser(server: ChatServer, room: string | ChatRoom, user: number | User) {
+// TODO: server -> client events to listen for:
+//  server:userAdd        EventTypes.USER_ADD
+//  server:create         EventTypes.ROOM_ADD
+//  server:remove         EventTypes.ROOM_REMOVE
+//  server:userRemove     EventTypes.USER_REMOVE
+//  server:sendMessage    EventTypes.MESSAGE
+
+export default async function addRoomUser(
+  server: ChatServer,
+  room: number | ChatRoom,
+  user: number | User,
+  owner: number
+) {
   const normalizedUser =
     typeof user === 'number'
       ? await User.findOne({
@@ -13,16 +31,17 @@ export default async function addRoomUser(server: ChatServer, room: string | Cha
       : user;
 
   const normalizedRoom =
-    typeof room === 'string'
+    typeof room === 'number'
       ? await ChatRoom.findOne({
           where: {
             id: room,
           },
+          relations: ['owner'],
         })
       : room;
 
-  if (!normalizedUser || !normalizedRoom || !normalizedRoom.users) return;
-
+  if (!normalizedUser || !normalizedRoom || !normalizedRoom.users) throw new Error('User or room not found');
+  if (normalizedRoom.owner.id !== owner) throw new Error('No permission');
   const memo: number[] = [];
 
   for (const user of normalizedRoom.users) {
@@ -34,5 +53,13 @@ export default async function addRoomUser(server: ChatServer, room: string | Cha
 
   await normalizedRoom.save();
 
-  server.eventSockets.emitEvent('roomuseradd', normalizedRoom.toWebJson().users, (id) => memo.includes(id));
+  server.eventSockets.emitEvent(
+    'server:userAdd',
+    {
+      roomId: normalizedRoom.id,
+      users: normalizedRoom.toWebJson().users,
+    },
+    memo
+  );
 }
+// TODO: implement server side part of this later

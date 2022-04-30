@@ -15,32 +15,40 @@ UserRouter.get('/', (req, res) => {
   res.status(200).end();
 });
 
-UserRouter.ws('/events', (ws, req) => {
-  const token = req.authToken;
-  if (!token) return ws.close();
+// // i have a websocket set up here, how would I have socket.io listen on this endpoint?
+// // it request ws://localhost.../events
+// UserRouter.ws('/events', (ws, req) => {
+//   console.log('WEBSCOKETAWSD');
 
-  const userId = req.server.tokens.getIDByToken(token);
-  if (!userId) return ws.close();
+//   const token = req.authToken;
+//   console.log('token: ' + token);
 
-  req.server.eventSockets.addSocket(userId, ws);
+//   if (!token) return ws.close();
 
-  ws.on('message', (msg) => {
-    // format: {
-    //     name: string;
-    //     ... other args
-    // }
-    // authentication: Bearer [token]
-    let evt;
-    try {
-      evt = JSON.parse(msg.toString());
-    } catch (err) {
-      return;
-    }
-    if (!evt.name) return;
+//   const userId = req.server.tokens.getIDByToken(token);
+//   console.log('userId: ' + userId);
 
-    req.server.events.emit(evt.name, token, evt);
-  });
-});
+//   if (!userId) return ws.close();
+
+//   req.server.eventSockets.addSocket(userId, ws);
+
+//   ws.on('message', (msg) => {
+//     // format: {
+//     //     name: string;
+//     //     ... other args
+//     // }
+//     // authentication: Bearer [token]
+//     let evt;
+//     try {
+//       evt = JSON.parse(msg.toString());
+//     } catch (err) {
+//       return;
+//     }
+//     if (!evt.name) return;
+
+//     req.server.events.emit(evt.name, token, evt);
+//   });
+// });
 
 UserRouter.get('/me', async (req, res) => {
   const token = req.authToken || '';
