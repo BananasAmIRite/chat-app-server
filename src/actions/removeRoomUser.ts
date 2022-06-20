@@ -23,12 +23,14 @@ export default async function removeRoomUser(
           where: {
             id: room,
           },
-          relations: ['owner'],
+          relations: ['owner', 'users'],
         })
       : room;
 
   if (!normalizedUser || !normalizedRoom || !normalizedRoom.users) throw new Error('User or room not found');
   if (normalizedRoom?.owner.id !== ownerUser) throw new Error('No permission');
+  if (normalizedRoom.users.find((e) => e.id === normalizedUser.id) === undefined)
+    throw new Error('User not in the chatroom');
 
   const e = normalizedRoom.users.findIndex((e) => e.id === normalizedUser.id);
 

@@ -10,7 +10,7 @@ export default async function removeRoom(server: ChatServer, room: number | Chat
           where: {
             id: room,
           },
-          relations: ['owner'],
+          relations: ['owner', 'users'],
         })
       : room;
 

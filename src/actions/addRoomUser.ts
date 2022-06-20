@@ -18,14 +18,14 @@ import ChatServer from '../Server';
 export default async function addRoomUser(
   server: ChatServer,
   room: number | ChatRoom,
-  user: number | User,
+  user: string | User,
   owner: number
 ) {
   const normalizedUser =
-    typeof user === 'number'
+    typeof user === 'string'
       ? await User.findOne({
           where: {
-            id: user,
+            user,
           },
         })
       : user;
@@ -36,12 +36,14 @@ export default async function addRoomUser(
           where: {
             id: room,
           },
-          relations: ['owner'],
+          relations: ['owner', 'users'],
         })
       : room;
 
   if (!normalizedUser || !normalizedRoom || !normalizedRoom.users) throw new Error('User or room not found');
   if (normalizedRoom.owner.id !== owner) throw new Error('No permission');
+  if (normalizedRoom.users.find((e) => e.id === normalizedUser.id) !== undefined)
+    throw new Error('User already in the chatroom');
   const memo: number[] = [];
 
   for (const user of normalizedRoom.users) {

@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { ParamsDictionary, Query } from 'express-serve-static-core';
 import ChatRoom from '../../entities/ChatRoom.entity';
-import User from '../../entities/User.entity';
 import VerifyCredentials from '../../middlewares/VerifyCredentials';
 import Utils from '../../utils/utils';
 // import ChatroomCreateRouter from './create/ChatroomCreateRouter';
 // import ChatroomDeleteRouter from './delete/ChatroomDeleteRouter';
-// import MessagesRouter from './messages/messages.router';
+import MessagesRouter from './messages/messages.router';
 import ChatroomUsersRouter from './users/user.router';
 
 const ChatRoomRouter = Router();
@@ -56,7 +55,7 @@ ChatRoomRouter.get('/', (req, res) => {
 });
 
 // ChatRoomRouter.use('/:roomId/message', MessageRouter); // deprecated in favor of POST api/chatroom/:roomId/messages/send
-// ChatRoomRouter.use('/:roomId/messages', MessagesRouter);
+ChatRoomRouter.use('/:roomId/messages', MessagesRouter);
 // ChatRoomRouter.use('/:roomId/delete', ChatroomDeleteRouter);
 ChatRoomRouter.use('/:roomId/users', ChatroomUsersRouter);
 // ChatRoomRouter.use('/create', ChatroomCreateRouter);

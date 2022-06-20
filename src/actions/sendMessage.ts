@@ -2,13 +2,16 @@ import ChatRoom from '../entities/ChatRoom.entity';
 import Message from '../entities/Message.entity';
 import User from '../entities/User.entity';
 import ChatServer from '../Server';
+import { Descendant } from 'slate';
 
 export default async function sendMessage(
   server: ChatServer,
   chatroom: number | ChatRoom,
   user: number | User,
-  message: string
+  message: Descendant[]
 ) {
+  console.log(message);
+
   const normalizedChatroom =
     typeof chatroom === 'number'
       ? await ChatRoom.findOne({

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import ChatRoom from './ChatRoom.entity';
 import User from './User.entity';
+import { Descendant } from 'slate';
 
 @Entity()
 export default class Message extends BaseEntity {
@@ -18,8 +19,8 @@ export default class Message extends BaseEntity {
   @ManyToOne(() => ChatRoom, (r) => r.messages)
   chatRoom!: ChatRoom;
 
-  @Column({ type: 'mediumtext' })
-  content!: string;
+  @Column({ type: 'json' })
+  content!: Descendant[];
 
   @ManyToOne(() => User)
   user!: User;
