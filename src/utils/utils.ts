@@ -30,7 +30,7 @@ export default class Utils {
   }
 
   static success(res: Response, response?: any, code = 200) {
-    this.sendCode(res, code, response !== undefined ? { response, success: true } : {});
+    this.sendCode(res, code, { response, success: true });
   }
 
   static genCode() {
