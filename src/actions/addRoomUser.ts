@@ -40,7 +40,8 @@ export default async function addRoomUser(
         })
       : room;
 
-  if (!normalizedUser || !normalizedRoom || !normalizedRoom.users) throw new Error('User or room not found');
+  if (!normalizedUser) throw new Error('User not found');
+  if (!normalizedRoom || !normalizedRoom.users) throw new Error('Room not found');
   if (normalizedRoom.owner.id !== owner) throw new Error('No permission');
   if (normalizedRoom.users.find((e) => e.id === normalizedUser.id) !== undefined)
     throw new Error('User already in the chatroom');
