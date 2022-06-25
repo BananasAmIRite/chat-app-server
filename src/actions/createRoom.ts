@@ -17,9 +17,6 @@ export default async function createRoom(
         })
       : owner;
 
-  console.log('creating room...');
-  console.log(normalizedOwner);
-
   if (!normalizedOwner) throw new Error(`Invalid user. `);
 
   const room = ChatRoom.create({

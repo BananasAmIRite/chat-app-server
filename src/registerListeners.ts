@@ -67,7 +67,7 @@ const handleError = async (f: () => any, cb: Acknowledgment) => {
     await f();
     cb<true>({ success: true, response: null });
   } catch (err: any) {
-    console.log(err);
+    // console.log(err);
 
     cb<false>({ success: false, error: err.message });
   }

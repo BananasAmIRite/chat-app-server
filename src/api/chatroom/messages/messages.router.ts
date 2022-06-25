@@ -64,7 +64,6 @@ MessagesRouter.get<{ roomId: string }>('/', async (req, res) => {
       isLastOne: nextMessages.length === 0,
     });
   } catch (err: any) {
-    console.log(err);
     Utils.error(res, err.message);
   }
 });

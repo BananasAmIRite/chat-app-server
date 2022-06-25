@@ -10,8 +10,6 @@ export default async function sendMessage(
   user: number | User,
   message: Descendant[]
 ) {
-  console.log(message);
-
   const normalizedChatroom =
     typeof chatroom === 'number'
       ? await ChatRoom.findOne({
